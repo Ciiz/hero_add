@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../05-课程代码需要用到的第三方库/libs/bootstrap/css/bootstrap.min.css">
+  <style>
+    .panel {
+      width: 900px;
+      margin: 10px auto;
+    }
+
+    .table img {
+      width: 40px;
+      height: 40px;
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="panel panel-primary">
+      <!-- Default panel contents -->
+      <div class="panel-heading">英雄列表管理</div>
+      <div class="panel-body">
+        <!-- 存放的搜索区域 -->
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="input-group">
+              <input type="text" id="search_hreo" class="form-control" placeholder="输入英雄信息...">
+              <span class="input-group-btn">
+                <button class="btn btn-default" id="button_search" type="button">搜索</button>
+              </span>
+            </div><!-- /input-group -->
+          </div><!-- /.col-lg-6 -->
+
+          <div class="col-lg-3 col-lg-offset-3">
+            <!-- 添加英雄的按钮 -->
+
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">添加英雄</button>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">添加英雄</h4>
+                  </div>
+                  <div class="modal-body">
+                    <!--  表单开始-->
+                    <form class="form-horizontal" id="tijiao">
+                      <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">英雄名称</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="name" id="inputname" placeholder="请输入英雄名称">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10">
+                          <!-- <input type="password" class="form-control" id="inputPassword3" placeholder="Password"> -->
+                          <select name="gender" id="h_gender">
+                            <option>男</option>
+                            <option>女</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-2">
+
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-2">
+                          <button type="submit" class="btn btn-default">提交</button>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                      </div>
+                    </form>
+                    <!-- 表单结束 -->
+
+                  </div>
+                  <div class="modal-footer">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 上传英雄头像静态结构-开始 -->
+        <!-- Modal -->
+        <div class="modal fade" id="upladModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">上传头像</h4>
+              </div>
+              <div class="modal-body">
+                <!-- 将英雄添加表单添加到moda窗口的body中 -->
+                <input type="file" id="file">
+                <br />
+
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" id="btn_upload" class="btn btn-success">提交</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">关闭</button>
+                  </div>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 上传英雄头像静态结构-结束 -->
+
+
+      </div>
+
+      <!-- Table -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>编号</th>
+            <th>英雄名称</th>
+            <th>英雄性别</th>
+            <th>头像</th>
+            <th>操作区</th>
+          </tr>
+
+        </thead>
+        <tbody id="tbody">
+          <tr>
+            <td>1</td>
+            <td>大乔</td>
+            <td>女</td>
+            <td><img src="http://127.0.0.1:3001/assets/uploads/222.jpg"></td>
+            <td>
+              <button type="button" class="btn btn-warning">上传头像</button>
+              <button type="button" class="btn btn-danger">删除</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <script src="../lib/jquery.min.js"></script>
+  <script src="../05-课程代码需要用到的第三方库/libs/bootstrap/js/bootstrap.min.js"></script>
+  <script>
+
+    $(function () {
+      get_hero_list();
+
+      // button_search.click(function () {
+      //   $('.form-control').val()
+      // })
+
+      uploadpic()
+      search_hear()
+    })
+
+
+    //生成英雄列表
+    function get_hero_list(value1) {
+      let sum = ''
+      $.ajax({
+        url: 'http://127.0.0.1:3001/getHeroList',
+        data: {heroName:value1},
+        type: 'get',
+        success: function (resData) {
+          resData.data.forEach(function (ele) {
+            if (resData.code !== 200) {
+              return
+            }
+            let flag = `
+            <tr>
+              <td>${ele.id}</td>
+              <td>${ele.name}</td>
+              <td>${ele.gender}</td>
+              <td><img src="${ele.img}"></td>
+              <td>
+                <button type="button" onclick=show_hreo_pic(${ele.id}) class="btn btn-warning">上传头像</button>
+                <button type="button" onclick=re_hero(${ele.id}) class="btn btn-danger">删除</button>   
+              </td> 
+            </tr>
+            `
+            sum += flag
+          })
+          $('tbody').html(sum)
+        }
+      })
+    }
+
+    //点击了删除 调用re_hero函数
+    function re_hero(h_id) {
+      console.log(h_id);
+      $.ajax({
+        url: 'http://127.0.0.1:3001/delHeroById',
+        type: 'get',
+        data: { id: h_id },
+        success: function (resData) {
+          get_hero_list()
+        }
+      })
+    }
+    //添加英雄
+    $('#tijiao').submit(function (e) {
+      e.preventDefault()
+      let a = $('#tijiao').serialize()
+      a += '&img=imgpath'
+      $.ajax({
+        url: 'http://127.0.0.1:3001/addHero',
+        type: 'post',
+        data: a,
+        success: function (resData) {
+          console.log(resData);
+          if (resData.code !== 200) {
+            alert('添加失败')
+            return
+          }
+          get_hero_list()
+          $('#myModal').modal('hide')
+        }
+      })
+    })
+
+
+    //点击了上传头像按钮显示状态框,,并且给他id的值
+    let pic_id = 0
+    function show_hreo_pic(id) {
+      $('#upladModal').modal('show')
+      pic_id = id             //id值给全局变量
+    }
+
+
+
+    //上传图片
+    function uploadpic() {
+      $('#btn_upload').click(function () {                  //点击了提交按钮
+        let file = document.querySelector('#file').files[0]
+        let formData = new FormData();
+        formData.append('file_data', file);     //formData.append()方法中的键需要和文件上传接口定义的名字保持一致
+
+        $.ajax({
+          url: 'http://127.0.0.1:3001/uploadFile',
+          type: 'post',
+          contentType: false,
+          processData: false,
+          data: formData,
+          success: function (resData) {                 //resData拿到图片的路径
+            console.log(resData);
+
+            $.ajax({
+              url: 'http://127.0.0.1:3001/getHeroById',
+              data: { id: pic_id },                     //通过id值找 获取到相关的属性
+              type: 'get',
+              success: function (resData1) {
+                // let heroinfo = resData1.data
+                // heroinfo.img = resData.src
+                // console.log(resData1);
+                // console.log(heroinfo);
+                resData1.data.img = resData.src          // 修改resData1的img的属性值 为resData拿到图片的路径
+
+                $.ajax({
+                  url: 'http://127.0.0.1:3001/updateHero',
+                  data: resData1.data,                // 这里是拿到的全部数据 设置上去
+                  type: 'post',
+                  success: function (resData2) {
+                    get_hero_list()
+                    $('#upladModal').modal('hide')
+                  }
+                })
+              }
+            })
+
+          }
+        })
+      })
+    }
+
+    function search_hear(){
+      $('#button_search').click(function(){
+        console.log($('#search_hreo').val());
+        let value1=$('#search_hreo').val()
+       
+            get_hero_list(value1)
+      })
+    }
+
+
+  </script>
+
+</body>
+
+</html>

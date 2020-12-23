@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../05-课程代码需要用到的第三方库/libs/bootstrap/css/bootstrap.min.css">
+  <style>
+    .panel {
+      width: 900px;
+      margin: 10px auto;
+    }
+
+    .table img {
+      width: 40px;
+      height: 40px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="panel panel-primary">
+      <!-- Default panel contents -->
+      <div class="panel-heading">英雄列表管理</div>
+      <div class="panel-body">
+        <!-- 存放的搜索区域 -->
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="输入英雄信息...">
+              <span class="input-group-btn">
+                <button class="btn btn-default" id="button_search" type="button">搜索</button>
+              </span>
+            </div><!-- /input-group -->
+          </div><!-- /.col-lg-6 -->
+
+          <div class="col-lg-3 col-lg-offset-3">
+            <!-- 添加英雄的按钮 -->
+
+            <button type="button" class="btn btn-success">添加英雄</button>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Table -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>编号</th>
+            <th>英雄名称</th>
+            <th>英雄性别</th>
+            <th>头像</th>
+            <th>操作区</th>
+          </tr>
+
+        </thead>
+        <tbody id="tbody">
+          <tr>
+            <td>1</td>
+            <td>大乔</td>
+            <td>女</td>
+            <td><img src="http://127.0.0.1:3001/assets/uploads/222.jpg"></td>
+            <td>
+              <button type="button" class="btn btn-warning">上传头像</button>
+              <button type="button" class="btn btn-danger">删除</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <script src="../lib/jquery.min.js"></script>
+  <script>
+
+    $(function () {
+      get_hero_list()
+      button_search.click(function () {
+        $('.form-control').val()
+      })
+    })
+
+
+    function get_hero_list() {
+      let sum = ''
+      $.ajax({
+        url: 'http://127.0.0.1:3001/getHeroList',
+        data: null,
+        type: 'get',
+        success: function (resData) {
+          resData.data.forEach(function (ele) {
+            if (resData.code !== 200) {
+              return
+            }
+            let flag = `
+            <tr>
+              <td>${ele.id}</td>
+              <td>${ele.name}</td>
+              <td>${ele.gender}</td>
+              <td><img src="${ele.img}"></td>
+              <td>
+                <button type="button" class="btn btn-warning">上传头像</button>
+                <button type="button" onclick=re_hero(${ele.id}) class="btn btn-danger">删除</button>
+              </td>
+            </tr>
+            `
+            sum += flag
+          })
+          $('tbody').html(sum)
+        }
+      })
+    }
+
+    function re_hero(h_id) {
+      console.log(h_id);
+      // $.ajax({
+      //   url: 'http://127.0.0.1:3001/delHeroById',
+      //   type: 'get',
+      //   data: { id: h_id },
+      //   success: function (resData) {
+      //     get_hero_list()
+      //   }
+      // })
+    }
+
+  </script>
+</body>
+
+</html>

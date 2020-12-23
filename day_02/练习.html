@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+
+    </div>
+
+    <!-- 1.0 通过script标签导入template-web.js文件 -->
+    <script src="https://unpkg.com/art-template/lib/template-web.js"></script>
+
+     <!-- 2.0 定义一个符合art-template格式要求的模板（其中id可以自己定义） -->
+     <script id="tmp" type="text/html">
+        <!-- 2.0.1 遍历语法，其中list变量要在template()方法第二个参数中存在   -->
+        {{each list}}
+            {{$index}} {{$value}} <br />
+        {{/each}}
+    </script>
+
+    <!-- 3.0 使用template(模板，数据)方法传入 模板和数据后会生成html字符串返回 
+    注意参数：
+             模板：模板填写 第2步中定义的模板id即可
+             数据：可以传入 对象{},数组[]等 均可
+    -->
+    <script>
+        // 3.0.1 定义对象
+       var data = { list:['程咬金','白起'] };
+
+        // 3.0.2 调用template方法,传入data对象生成最终html字符串存入到resHtml变量中
+        var resHtml = template('tmp', data)
+
+        // 3.0.3 将resHtml中的字符串添加到网页中的id为app的div中
+        document.querySelector('#app').innerHTML = resHtml;
+
+    </script>
+</body>
